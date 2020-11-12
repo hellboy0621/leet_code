@@ -1,30 +1,31 @@
-package com.transformers.advanced.week04;
+package com.transformers.advanced.week04.homework;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
- * 使用join方法阻塞main线程，等待thread1执行完成后，从数组中获取结果。
- * 使用时间：170 ms
+ * 使用CountLatch实现
+ * 使用时间：183 ms
  */
-public class HomeworkJoin {
+public class HomeworkCountLatch {
 
     public static void main(String[] args) {
 
         long start = System.currentTimeMillis();
         // 在这里创建一个线程或线程池
+        CountDownLatch cdl = new CountDownLatch(1);
         final int[] ret = new int[1];
-        Thread thread1 = new Thread(() -> {
+        new Thread(() -> {
             ret[0] = sum();
-        });
-        thread1.start();
-
+            cdl.countDown();
+        }).start();
         // 异步执行 下面方法
         try {
-            thread1.join();
+            cdl.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        int result = ret[0]; //这是得到的返回值
 
-        //这是得到的返回值
-        int result = ret[0];
         // 确保  拿到result 并输出
         System.out.println("异步计算结果为：" + result);
 

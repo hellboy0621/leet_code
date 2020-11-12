@@ -1,31 +1,28 @@
-package com.transformers.advanced.week04;
-
-import java.util.concurrent.CountDownLatch;
+package com.transformers.advanced.week04.homework;
 
 /**
- * 使用CountLatch实现
- * 使用时间：183 ms
+ * 判断当前执行线程数量大于2时，yield让出CPU时间片，直到运算完毕，活动线程数量为2时，继续执行
+ * 使用时间：190 ms
  */
-public class HomeworkCountLatch {
+public class HomeworkYield {
 
     public static void main(String[] args) {
 
         long start = System.currentTimeMillis();
         // 在这里创建一个线程或线程池
-        CountDownLatch cdl = new CountDownLatch(1);
         final int[] ret = new int[1];
-        new Thread(() -> {
+        Thread thread1 = new Thread(() -> {
             ret[0] = sum();
-            cdl.countDown();
-        }).start();
-        // 异步执行 下面方法
-        try {
-            cdl.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        int result = ret[0]; //这是得到的返回值
+        });
+        thread1.start();
 
+        // 异步执行 下面方法
+        while (Thread.activeCount() > 2) {
+            Thread.yield();
+        }
+
+        //这是得到的返回值
+        int result = ret[0];
         // 确保  拿到result 并输出
         System.out.println("异步计算结果为：" + result);
 

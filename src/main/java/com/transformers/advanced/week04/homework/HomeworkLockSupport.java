@@ -1,28 +1,43 @@
-package com.transformers.advanced.week04;
+package com.transformers.advanced.week04.homework;
+
+import java.util.concurrent.locks.LockSupport;
 
 /**
- * 判断当前执行线程数量大于2时，yield让出CPU时间片，直到运算完毕，活动线程数量为2时，继续执行
- * 使用时间：190 ms
+ * 使用LockSupport的park和unpark机制实现
+ * 使用时间：104 ms
  */
-public class HomeworkYield {
+public class HomeworkLockSupport {
+
+    static class MyThread extends Thread {
+        private int[] ret;
+        private Thread mainThread;
+
+        public MyThread(int[] ret, Thread mainThread) {
+            this.ret = ret;
+            this.mainThread = mainThread;
+        }
+
+        @Override
+        public void run() {
+            ret[0] = sum();
+            LockSupport.unpark(mainThread);
+        }
+    }
 
     public static void main(String[] args) {
 
         long start = System.currentTimeMillis();
         // 在这里创建一个线程或线程池
         final int[] ret = new int[1];
-        Thread thread1 = new Thread(() -> {
-            ret[0] = sum();
-        });
-        thread1.start();
+        Thread thread = new Thread(new MyThread(ret, Thread.currentThread()));
+        thread.start();
 
         // 异步执行 下面方法
-        while (Thread.activeCount() > 2) {
-            Thread.yield();
-        }
+        LockSupport.park();
 
         //这是得到的返回值
         int result = ret[0];
+
         // 确保  拿到result 并输出
         System.out.println("异步计算结果为：" + result);
 

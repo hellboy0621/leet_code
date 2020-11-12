@@ -1,4 +1,4 @@
-package com.transformers.advanced.week04;
+package com.transformers.advanced.week04.homework;
 
 /**
  * 使用wait阻塞main线程，当计算完毕后
