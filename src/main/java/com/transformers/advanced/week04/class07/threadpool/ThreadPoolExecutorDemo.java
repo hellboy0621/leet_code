@@ -1,4 +1,4 @@
-package com.transformers.advanced.week04.threadpool;
+package com.transformers.advanced.week04.class07.threadpool;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
